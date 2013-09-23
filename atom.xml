@@ -4,7 +4,7 @@
   <title><![CDATA[Peer's Corner]]></title>
   <link href="http://allanweb.ca/atom.xml" rel="self"/>
   <link href="http://allanweb.ca/"/>
-  <updated>2013-09-22T20:00:57-05:00</updated>
+  <updated>2013-09-22T20:21:19-05:00</updated>
   <id>http://allanweb.ca/</id>
   <author>
     <name><![CDATA[Peer Allan]]></name>
@@ -12,6 +12,34 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Chiliproject to Redmine Converter]]></title>
+    <link href="http://allanweb.ca/blog/2013/09/22/chiliproject-to-redmine-converter/"/>
+    <updated>2013-09-22T20:05:00-05:00</updated>
+    <id>http://allanweb.ca/blog/2013/09/22/chiliproject-to-redmine-converter</id>
+    <content type="html"><![CDATA[<p>My company has been using Redmine as a basic project management tool for
+many years. A couple of years ago Redmine was forked by many of the
+developers to a parallel project known as Chiliproject. At the time we
+studied the roadmaps and goals of each fork and decided to move to
+Chiliproject. As the two projects has just separated the transition was
+fairly easy.</p>
+
+<p>Fast forward two years, Redmine has a thriving community, has upgraded
+to Rails 3, releases regular updates and has a plethora of plugins.
+Chiliproject as floundered in comparison. The only
+updates that have been released in the past year have been to fix
+security issues in Rails or Ruby.</p>
+
+<p>It was because of this we made the fateful decision to switch back to
+Redmine. Unfortunately, the projects are much farther apart in terms of
+the codebase and database structure.  Add to this, Chiliproject has truly
+engrained itself in our company. We needed a way to convert back to Redmine
+without impacting the users.</p>
+
+<p>After some research we came up with <a href="https://gist.github.com/pallan/6663018">this script</a> to do the job. It has fairly detailed comments, but if you notice any problems or have any comments feel free to add them to the gist.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Brew, git 1.8.0 & "-bash: __git_ps1: command not found"]]></title>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: activerecord | Peer's Corner]]></title>
+  <link href="http://allanweb.ca/blog/categories/activerecord/atom.xml" rel="self"/>
+  <link href="http://allanweb.ca/"/>
+  <updated>2013-09-22T19:57:51-05:00</updated>
+  <id>http://allanweb.ca/</id>
+  <author>
+    <name><![CDATA[Peer Allan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveRecord 3 based Rubygem]]></title>
+    <link href="http://allanweb.ca/blog/2010/11/19/activerecord-3-based-rubygem/"/>
+    <updated>2010-11-19T21:12:00-06:00</updated>
+    <id>http://allanweb.ca/blog/2010/11/19/activerecord-3-based-rubygem</id>
+    <content type="html"><![CDATA[<p>At our company we had to integrate with a legacy database system. To manage it we created a nice little gem to handle it. Basically the gem was just a collection of ActiveRecord models, nicely namespaced, so that we could include it in any application that made have needed access to that db. Code using the gem set it up as you would expect (in a Rails app we used a custom db connection in the database.yml):</p>
+
+<p><code>ruby
+require 'legacy_database'
+LegacyDatabase::Base.establish_connection(...)
+</code></p>
+
+<p>This functioned great for many years and versions of ActiveRecord.</p>
+
+<p>Jump forward to today, we have another separate database we need to connect to. Naturally, after the success of the previous gem we decided to create a new gem using the existing pattern, but this time we are going to use the new and fancy ActiveRecord 3 and its nice new Arel syntax.</p>
+
+<p>We started building the gem and immediately ran into a blocker.  Using the same code as above, as soon as the require was executed we get an ActiveRecord::ConnectionNotEstablished error. Nuts!</p>
+
+<p><code>ruby
+require 'special_database' # &amp;lt;= raises ActiveRecord::ConnectionNotEstablished
+SpecialDatabase::Base.establish_connection(...)
+</code></p>
+
+<p>The backtrace showed us that when the gem was being loaded when it hits the first scope call Arel attempts to connect to the database.  Why? I am not sure and I haven&rsquo;t had time to dig around to find out if it is even possible to fix. Its a classic chicken/egg situation. You can&rsquo;t initialize the connection until you load the gem and you can&rsquo;t load the gem without initializing the connection.</p>
+
+<p>In our situation we aren&rsquo;t using the gem in concert with any other ActiveRecord connections so we are able to use ActiveRecord::Base to establish the connection.</p>
+
+<p>```ruby
+require &lsquo;activerecord&rsquo;
+ActiveRecord::Base.establish_connection(&hellip;)</p>
+
+<p>require &lsquo;special_database&rsquo;
+SpecialDatabase::Foo.find(1)  # It work&rsquo;s
+```</p>
+
+<p>I really don&rsquo;t like it, but so far its our only option. Got a better solutions I&rsquo;d be happy to hear it.</p>
+]]></content>
+  </entry>
+  
+</feed>

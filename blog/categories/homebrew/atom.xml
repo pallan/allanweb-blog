@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: homebrew | Peer's Corner]]></title>
+  <link href="http://allanweb.ca/blog/categories/homebrew/atom.xml" rel="self"/>
+  <link href="http://allanweb.ca/"/>
+  <updated>2013-09-22T19:57:51-05:00</updated>
+  <id>http://allanweb.ca/</id>
+  <author>
+    <name><![CDATA[Peer Allan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Brew, git 1.8.0 & "-bash: __git_ps1: command not found"]]></title>
+    <link href="http://allanweb.ca/blog/2012/11/19/brew-git-ps-1-not-found/"/>
+    <updated>2012-11-19T08:06:00-06:00</updated>
+    <id>http://allanweb.ca/blog/2012/11/19/brew-git-ps-1-not-found</id>
+    <content type="html"><![CDATA[<p>I updated my machine this past weekend. This included everything from <a href="http://www.apple.com/osx/">Mountain Lion</a> to <a href="http://mxcl.github.com/homebrew/">Homebrew</a> (including all formulas).</p>
+
+<p>As part of this update I moved from git 1.7.2.x to 1.8.0. After I did so and launched a new terminal I started seeing this fun error</p>
+
+<p><code>
+-bash: __git_ps1: command not found
+</code></p>
+
+<p>I checked the git 1.8.0 release notes but could not see any mention of a change to the prompt scripts.  <a href="http://www.spinics.net/lists/git/msg191753.html">After much research</a> (and gnashing of teeth) I discovered that the git shell commands that were responsible for making that nice prompt were moved from contrib/completion/git-completion.bash into a separate file contrib/completion/git-prompt.sh</p>
+
+<p>To fix it I added the following line to my ~/.bash_profile above where I defined my prompt</p>
+
+<p><code>
+source /usr/local/etc/bash_completion.d/git-prompt.sh
+</code></p>
+
+<p>Where /usr/local/etc/bash_completion.d is where brew puts the completion scripts it installs.</p>
+
+<p>I am no bash guru so I will not advocate that this is the best way to fix this problem.If you are a bash guru and know a better way please comment so we can all learn something.</p>
+]]></content>
+  </entry>
+  
+</feed>

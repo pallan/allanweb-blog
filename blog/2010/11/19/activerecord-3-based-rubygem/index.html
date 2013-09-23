@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Peer's Corner</title>
+  <title>ActiveRecord 3 based Rubygem - Peer's Corner</title>
   <meta name="author" content="Peer Allan">
 
   
-  <meta name="description" content="I updated my machine this past weekend. This included everything from Mountain Lion to Homebrew (including all formulas). As part of this update I &hellip;">
+  <meta name="description" content="At our company we had to integrate with a legacy database system. To manage it we created a nice little gem to handle it. Basically the gem was just &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://allanweb.ca">
+  <link rel="canonical" href="http://allanweb.ca/blog/2010/11/19/activerecord-3-based-rubygem">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Peer's Corner" type="application/atom+xml">
@@ -61,109 +61,12 @@
 
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/11/19/brew-git-ps-1-not-found/">Brew, Git 1.8.0 & &#8220;-bash: __git_ps1: Command Not Found&#8221;</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-19T08:06:00-06:00" pubdate data-updated="true">Nov 19<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I updated my machine this past weekend. This included everything from <a href="http://www.apple.com/osx/">Mountain Lion</a> to <a href="http://mxcl.github.com/homebrew/">Homebrew</a> (including all formulas).</p>
-
-<p>As part of this update I moved from git 1.7.2.x to 1.8.0. After I did so and launched a new terminal I started seeing this fun error</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>-bash: __git_ps1: command not found</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I checked the git 1.8.0 release notes but could not see any mention of a change to the prompt scripts.  <a href="http://www.spinics.net/lists/git/msg191753.html">After much research</a> (and gnashing of teeth) I discovered that the git shell commands that were responsible for making that nice prompt were moved from contrib/completion/git-completion.bash into a separate file contrib/completion/git-prompt.sh</p>
-
-<p>To fix it I added the following line to my ~/.bash_profile above where I defined my prompt</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>source /usr/local/etc/bash_completion.d/git-prompt.sh</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Where /usr/local/etc/bash_completion.d is where brew puts the completion scripts it installs.</p>
-
-<p>I am no bash guru so I will not advocate that this is the best way to fix this problem.If you are a bash guru and know a better way please comment so we can all learn something.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/11/02/prefix-git-commit-message-using-hooks/">Prefix Git Commit Message Using Hooks</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-02T10:01:00-05:00" pubdate data-updated="true">Nov 2<span>nd</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>My team uses <a href="http://chiliproject.org/">Chiliproject</a> to manage our user stories. We have a team agreement to ensure that each commit message into our git repository is prefixed with the issue ID that the commit is related to. In addition to this we have a branch naming convention that also identifies the issue that branch is supposed to address.  For example, a branch name could be, &ldquo;rm-3454-customer-defect&rdquo; and (hopefully) all commit messages will be prefixed with &ldquo;RM #3454&rdquo;. Chiliproject has some nice little features with linking and styling when the &ldquo;#4233&rdquo; pattern is found. However, it can be fickle. If you forget to put in a space, for example, &ldquo;RM#3432&rdquo; none of it will work.</p>
-
-<p>Making sure this formatting is correct can be a real pain in the a**.  Therefore, I took it upon myself to simplify things. The script below uses our branch naming convention to automatically prefix any commit message using the git &ldquo;commit-msg&rdquo; hook. You can see the code <a href="https://gist.github.com/pallan/4001241">is this gist</a>.</p>
-
-<p>Put this code in the &ldquo;.git/hooks/commit-msg&rdquo; file at the root of your repository, make it executable and you are ready to rumble (of course, this will only work if using ruby).</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2010/11/19/activerecord-3-based-rubygem/">ActiveRecord 3 Based Rubygem</a></h1>
+      <h1 class="entry-title">ActiveRecord 3 Based Rubygem</h1>
     
     
       <p class="meta">
@@ -186,7 +89,7 @@
   </header>
 
 
-  <div class="entry-content"><p>At our company we had to integrate with a legacy database system. To manage it we created a nice little gem to handle it. Basically the gem was just a collection of ActiveRecord models, nicely namespaced, so that we could include it in any application that made have needed access to that db. Code using the gem set it up as you would expect (in a Rails app we used a custom db connection in the database.yml):</p>
+<div class="entry-content"><p>At our company we had to integrate with a legacy database system. To manage it we created a nice little gem to handle it. Basically the gem was just a collection of ActiveRecord models, nicely namespaced, so that we could include it in any application that made have needed access to that db. Code using the gem set it up as you would expect (in a Rails app we used a custom db connection in the database.yml):</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -227,18 +130,21 @@
 
 <p>I really don&rsquo;t like it, but so far its our only option. Got a better solutions I&rsquo;d be happy to hear it.</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+  <footer>
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/11/02/prefix-git-commit-message-using-hooks/" title="Next Post: Prefix Git Commit Message using Hooks">Prefix Git Commit Message using Hooks &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+
 </div>
+
 <aside class="sidebar">
   
     <section>
@@ -246,7 +152,7 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2012/11/19/brew-git-ps-1-not-found/">Brew, git 1.8.0 & &#8220;-bash: __git_ps1: command not found&#8221;</a>
+        <a href="/blog/2012/11/19/brew-git-ps-1-not-found/">Brew, git 1.8.0 & "-bash: __git_ps1: command not found"</a>
       </li>
     
       <li class="post">
@@ -263,7 +169,7 @@
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/pallan">@pallan</a> on GitHub
@@ -295,6 +201,7 @@
 
   
 </aside>
+
 
     </div>
   </div>

@@ -4,7 +4,7 @@
 
 url: http://allanweb.ca
 title: Peer's Corner
-subtitle: Semi-random thought about web development 
+subtitle: Semi-random thoughts about life & web development 
 author: Peer Allan
 simple_search: http://google.com/search
 description:
@@ -99,3 +99,10 @@ google_analytics_tracking_id: 'UA-44003032-1'
 # Facebook Like
 facebook_like: true
 
+# LinkedIn
+linkedin_user: peerallan
+
+# Octoflat
+navigation:
+- text: Home
+  url: /index.html

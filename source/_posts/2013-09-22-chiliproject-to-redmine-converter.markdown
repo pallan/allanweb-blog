@@ -26,3 +26,7 @@ engrained itself in our company. We needed a way to convert back to Redmine
 without impacting the users.
 
 After some research we came up with <a href="https://gist.github.com/pallan/6663018">this script</a> to do the job. It has fairly detailed comments, but if you notice any problems or have any comments feel free to add them to the gist.
+
+Special thanks to my employer,
+[CanadaDrugs.com](https://www.canadadrugs.com), for allowing me to post
+this work back to the community.

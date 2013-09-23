@@ -4,7 +4,7 @@
   <title><![CDATA[Category: chiliproject | Peer's Corner]]></title>
   <link href="http://allanweb.ca/blog/categories/chiliproject/atom.xml" rel="self"/>
   <link href="http://allanweb.ca/"/>
-  <updated>2013-09-23T13:24:00-05:00</updated>
+  <updated>2013-09-23T13:37:36-05:00</updated>
   <id>http://allanweb.ca/</id>
   <author>
     <name><![CDATA[Peer Allan]]></name>
@@ -38,6 +38,10 @@ engrained itself in our company. We needed a way to convert back to Redmine
 without impacting the users.</p>
 
 <p>After some research we came up with <a href="https://gist.github.com/pallan/6663018">this script</a> to do the job. It has fairly detailed comments, but if you notice any problems or have any comments feel free to add them to the gist.</p>
+
+<p>Special thanks to my employer,
+<a href="https://www.canadadrugs.com">CanadaDrugs.com</a>, for allowing me to post
+this work back to the community.</p>
 ]]></content>
   </entry>
   

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Partition Your (MySQL) Tables"
-date: 2013-09-15 19:40
+date: 2013-11-10 19:40
 comments: true
 categories: [mysql]
 published: false 
@@ -41,7 +41,6 @@ INSERT INTO orders (name, ordered_date) VALUES ('Joe Smith','2013-05-13');
 ### That's kind of neat, but how does it help me with performance?  
 
 Once your table is partitioned you have essentially allowed the database engine to optimize your queries even more. When you run a `SELECT` statement with a condition based on `ordered_date` MySQL will evaluate those dates using the same `MONTH` function, determine which partition to use and only search that partition. Depending on your table size and number of partitions (12 in our example) that could cut the dataset needed to be searched significantly. 
-
 
 ```sql
 SELECT COUNT(*) FROM orders;
@@ -93,7 +92,23 @@ Beginning with MySQL 5.5.0, you can also truncate partitions using ALTER TABLE .
 {% endblockquote %}
 
 This allows you to _instantly_ (or very nearly) erase a partition no
-matter how large it is withoug impacting your system. For example, if
+matter how large it is without impacting your system. For example, if
 you have a large logging table of which you only need to keep the last 3
 months of data, you can easily `TRUNCATE` all the partitions older than
 3 months and shrink your dataset down.
+
+### Caveats
+
+This is a _very_ basic introduction to partitioning your tables in
+MySQL. A good friend, and full-time MySQL DBA, said to me that you could
+write an entire book on partitioning. I cannot stress enough that you
+take some time to learn about and make sure you understand partitioning
+at a deeper level before diving in.  
+
+### Additional Reading
+
+http://www.slideshare.net/PerconaPerformance/boost-performance-with-my-s-q-l-51-partitions
+http://ftp.nchu.edu.tw/MySQL/tech-resources/articles/testing-partitions-large-db.html
+http://dev.mysql.com/tech-resources/articles/mysql_55_partitioning.html
+http://www.tokutek.com/2011/01/partitioning-free-lunches-and-indexing/
+http://www.tokutek.com/2011/01/partitioning-free-lunches-and-indexing-part-2/

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Peer's Corner]]></title>
   <link href="http://allanweb.ca/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://allanweb.ca/"/>
-  <updated>2014-02-14T11:36:14-06:00</updated>
+  <updated>2014-02-14T11:38:45-06:00</updated>
   <id>http://allanweb.ca/</id>
   <author>
     <name><![CDATA[Peer Allan]]></name>
@@ -63,6 +63,127 @@ such we added a new initializer with our settings:</p>
 <p>We have forked Squash and are working on a &lsquo;proper&rsquo; solution for this
 that we will submit back to the project as a Pull Request. I will try to
 update this post when that patch is available and/or merged in.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Dealing with Rails 4 Deprecations]]></title>
+    <link href="http://allanweb.ca/blog/2013/11/10/dealing-with-rails-4-deprecations/"/>
+    <updated>2013-11-10T11:21:00-06:00</updated>
+    <id>http://allanweb.ca/blog/2013/11/10/dealing-with-rails-4-deprecations</id>
+    <content type="html"><![CDATA[<p>At my place of employment we have a very large Rails application that
+runs many parts of the business. The app was started on Rails 2.0 and went
+into production under Rails 2.3. It was only recently that we were able
+to get it updated to Rails 3.2 and Ruby 2.0. We the took a shot at getting
+it running under Rails 4. It took a few hours to get the site to load and
+the tests to run. We triggered a build in Jenkins proceeded to watch the
+console drown in DEPRECATION warnings.</p>
+
+<p>Most of these deprecations were directly related to the eventual
+removal of the old ActiveRecord finder syntax to the newer Arel syntax
+initially adopted in Rails 3. Here are some examples,</p>
+
+<p><code>
+DEPRECATION WARNING: Calling #find(:all) is deprecated. Please call #all directly instead. ...
+DEPRECATION WARNING: Calling #find(:first) is deprecated. Please call #first directly instead.
+DEPRECATION WARNING: Calling #scope or #default_scope with a hash is deprecated. Please use a lambda containing a scope.
+DEPRECATION WARNING: Passing options to #find is deprecated. Please build a scope and then call #find on it
+DEPRECATION WARNING: Relation#all is deprecated. If you want to eager-load a relation, you can call #load
+DEPRECATION WARNING: Relation#first with finder options is deprecated. Please build a scope and then call #first on it instead.
+DEPRECATION WARNING: The following options in your Model.has_many :notes declaration are deprecated: ...
+</code></p>
+
+<h2>Enter Arel Converter</h2>
+
+<p>The <a href="https://github.com/pallan/arel_converter">arel_converter</a> gem is a simple command line utility that uses parses
+Ruby files to find code whose syntax will be deprecated under Rails 4
+and converts it to be Rails 4 compatible. The converters use Ruby2Ruby
+and RubyParser to convert to and translate s-expressions. This ensures
+the code is converter back into valid Ruby code. Fancy regex and string
+parsing just doesn&rsquo;t work as well.</p>
+
+<p>Presently, there are 3 converters,</p>
+
+<h3>Scope</h3>
+
+<p>Converts &lsquo;scope&rsquo; statements into the updated Rails 4 syntax, i.e.
+wrapped in a lambda, with pre-Arel options converted to Arel</p>
+
+<p>```ruby
+scope :active, :conditions => {:active => true}, :order => &lsquo;created_at&rsquo;</p>
+
+<h1>becomes</h1>
+
+<p>scope :active, &ndash;> { where(active: true).order(&lsquo;created_at&rsquo;) }
+```</p>
+
+<h3>Associations</h3>
+
+<p>Updates associations to use the updated Rails 4 syntax, i.e. wrapped in
+lambdas where necessary. Association types handled are,</p>
+
+<ul>
+<li>belongs_to</li>
+<li>has_one</li>
+<li>has_many</li>
+<li>has_and_belongs_to_many</li>
+</ul>
+
+
+<p>```ruby
+has_many :articles, :class_name => &ldquo;Post&rdquo;, :order => &lsquo;updated_at DESC&rsquo;</p>
+
+<h1>becomes</h1>
+
+<p>has_many :articles, &ndash;> { order(&lsquo;updated_at DESC&rsquo;) }, class_name: &ldquo;Post&rdquo;
+```</p>
+
+<h3>Finders</h3>
+
+<p>Updates old ActiveRecord (pre Rails 3) syntax into Arel syntax of
+chained Relations. This handles the following, including chained calls,</p>
+
+<ul>
+<li>Object.find(:all</li>
+<li>Object.find(:first</li>
+<li>Object.find.*:conditions</li>
+<li>Object.all(</li>
+<li>Object.first(</li>
+</ul>
+
+
+<p>```ruby
+Model.find(:all, :conditions => [&lsquo;name = ?&rsquo;, params[:term]], :limit => 5)</p>
+
+<h1>becomes</h1>
+
+<p>Model.where(&lsquo;name = ?&rsquo;, params[:term]).limit(5)
+```</p>
+
+<p>Fortunately our application has a wide variety of calls to each of the
+above possibilities. Many of these variations ended up in the translator
+tests.</p>
+
+<h2>Notes/Warnings</h2>
+
+<p>As with any software that could potentially update a wide swath of your
+codebase in one (terrible) moment, it is recommended that you are
+operating under some form of source control or have a reliable backup
+<em>BEFORE</em> running the script.</p>
+
+<p>The converters don&rsquo;t play well with multiline code blocks. This means
+that the parser will encounter a Exception (likely SyntaxError) when
+processing the first line. This is because the matching code is a simple
+grep of the file. Therefore, it would only grab the first line of a
+multiline statement. The good news is that these exceptions will show up
+in the results.</p>
+
+<h2>Check it out!</h2>
+
+<p>The gem is available at <a href="https://rubygems.org/gems/arel_converter">rubygems.org</a> and the source is available on
+<a href="https://github.com/pallan/arel_converter">Github</a>. Hopefully, it can
+save you or your team some time and pain of trolling through thousands
+of lines of code to get ready for Rails 4.1.a</p>
 ]]></content>
   </entry>
   

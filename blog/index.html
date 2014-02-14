@@ -206,6 +206,170 @@ update this post when that patch is available and/or merged in.</p>
   
 
 
+<i class="icon-calendar-empty"></i> <time datetime="2013-11-10T11:21:00-06:00" pubdate data-updated="true">Nov 10<span>th</span>, 2013</time></h5>
+          <div class="row-fluid">
+          
+          </div>
+          
+          <div class="row-fluid">
+          
+          <a href="/blog/categories/rails/"><span class="badge">rails</span></a>
+          
+          <a href="/blog/categories/ruby/"><span class="badge">ruby</span></a>
+          
+          </div>
+          
+    </div>
+    <div class="span10">
+      <h1 class="link"><a href="/blog/2013/11/10/dealing-with-rails-4-deprecations/">Dealing with Rails 4 Deprecations</a></h1>
+      <p>At my place of employment we have a very large Rails application that
+runs many parts of the business. The app was started on Rails 2.0 and went
+into production under Rails 2.3. It was only recently that we were able
+to get it updated to Rails 3.2 and Ruby 2.0. We the took a shot at getting
+it running under Rails 4. It took a few hours to get the site to load and
+the tests to run. We triggered a build in Jenkins proceeded to watch the
+console drown in DEPRECATION warnings.</p>
+
+<p>Most of these deprecations were directly related to the eventual
+removal of the old ActiveRecord finder syntax to the newer Arel syntax
+initially adopted in Rails 3. Here are some examples,</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>DEPRECATION WARNING: Calling #find(:all) is deprecated. Please call #all directly instead. ...
+</span><span class='line'>DEPRECATION WARNING: Calling #find(:first) is deprecated. Please call #first directly instead.
+</span><span class='line'>DEPRECATION WARNING: Calling #scope or #default_scope with a hash is deprecated. Please use a lambda containing a scope.
+</span><span class='line'>DEPRECATION WARNING: Passing options to #find is deprecated. Please build a scope and then call #find on it
+</span><span class='line'>DEPRECATION WARNING: Relation#all is deprecated. If you want to eager-load a relation, you can call #load
+</span><span class='line'>DEPRECATION WARNING: Relation#first with finder options is deprecated. Please build a scope and then call #first on it instead.
+</span><span class='line'>DEPRECATION WARNING: The following options in your Model.has_many :notes declaration are deprecated: ...</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Enter Arel Converter</h2>
+
+<p>The <a href="https://github.com/pallan/arel_converter">arel_converter</a> gem is a simple command line utility that uses parses
+Ruby files to find code whose syntax will be deprecated under Rails 4
+and converts it to be Rails 4 compatible. The converters use Ruby2Ruby
+and RubyParser to convert to and translate s-expressions. This ensures
+the code is converter back into valid Ruby code. Fancy regex and string
+parsing just doesn&rsquo;t work as well.</p>
+
+<p>Presently, there are 3 converters,</p>
+
+<h3>Scope</h3>
+
+<p>Converts &lsquo;scope&rsquo; statements into the updated Rails 4 syntax, i.e.
+wrapped in a lambda, with pre-Arel options converted to Arel</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">scope</span> <span class="ss">:active</span><span class="p">,</span> <span class="ss">:conditions</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:active</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">},</span> <span class="ss">:order</span> <span class="o">=&gt;</span> <span class="s1">&#39;created_at&#39;</span>
+</span><span class='line'><span class="c1"># becomes</span>
+</span><span class='line'><span class="n">scope</span> <span class="ss">:active</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">where</span><span class="p">(</span><span class="ss">active</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s1">&#39;created_at&#39;</span><span class="p">)</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Associations</h3>
+
+<p>Updates associations to use the updated Rails 4 syntax, i.e. wrapped in
+lambdas where necessary. Association types handled are,</p>
+
+<ul>
+<li>belongs_to</li>
+<li>has_one</li>
+<li>has_many</li>
+<li>has_and_belongs_to_many</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">has_many</span> <span class="ss">:articles</span><span class="p">,</span> <span class="ss">:class_name</span> <span class="o">=&gt;</span> <span class="s2">&quot;Post&quot;</span><span class="p">,</span> <span class="ss">:order</span> <span class="o">=&gt;</span> <span class="s1">&#39;updated_at DESC&#39;</span>
+</span><span class='line'><span class="c1"># becomes</span>
+</span><span class='line'><span class="n">has_many</span> <span class="ss">:articles</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">order</span><span class="p">(</span><span class="s1">&#39;updated_at DESC&#39;</span><span class="p">)</span> <span class="p">},</span> <span class="n">class_name</span><span class="p">:</span> <span class="s2">&quot;Post&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Finders</h3>
+
+<p>Updates old ActiveRecord (pre Rails 3) syntax into Arel syntax of
+chained Relations. This handles the following, including chained calls,</p>
+
+<ul>
+<li>Object.find(:all</li>
+<li>Object.find(:first</li>
+<li>Object.find.*:conditions</li>
+<li>Object.all(</li>
+<li>Object.first(</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Model</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="ss">:all</span><span class="p">,</span> <span class="ss">:conditions</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s1">&#39;name = ?&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">[</span><span class="ss">:term</span><span class="o">]]</span><span class="p">,</span> <span class="ss">:limit</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># becomes</span>
+</span><span class='line'><span class="no">Model</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;name = ?&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">[</span><span class="ss">:term</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Fortunately our application has a wide variety of calls to each of the
+above possibilities. Many of these variations ended up in the translator
+tests.</p>
+
+<h2>Notes/Warnings</h2>
+
+<p>As with any software that could potentially update a wide swath of your
+codebase in one (terrible) moment, it is recommended that you are
+operating under some form of source control or have a reliable backup
+<em>BEFORE</em> running the script.</p>
+
+<p>The converters don&rsquo;t play well with multiline code blocks. This means
+that the parser will encounter a Exception (likely SyntaxError) when
+processing the first line. This is because the matching code is a simple
+grep of the file. Therefore, it would only grab the first line of a
+multiline statement. The good news is that these exceptions will show up
+in the results.</p>
+
+<h2>Check it out!</h2>
+
+<p>The gem is available at <a href="https://rubygems.org/gems/arel_converter">rubygems.org</a> and the source is available on
+<a href="https://github.com/pallan/arel_converter">Github</a>. Hopefully, it can
+save you or your team some time and pain of trolling through thousands
+of lines of code to get ready for Rails 4.1.a</p>
+
+      
+      
+    </div>
+  </div>
+
+
+</article>
+
+
+    <article class="post">
+
+  <div class="row-fluid">
+    <div class="span2">
+		<h1 class="date-time">
+
+
+
+
+
+
+
+
+  
+
+
 <i class="icon-calendar-empty"></i> <time datetime="2013-09-22T20:05:00-05:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2013</time></h5>
           <div class="row-fluid">
           

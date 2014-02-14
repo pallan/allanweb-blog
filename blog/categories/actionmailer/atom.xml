@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ActionMailer | Peer's Corner]]></title>
+  <link href="http://allanweb.ca/blog/categories/actionmailer/atom.xml" rel="self"/>
+  <link href="http://allanweb.ca/"/>
+  <updated>2014-02-14T11:35:20-06:00</updated>
+  <id>http://allanweb.ca/</id>
+  <author>
+    <name><![CDATA[Peer Allan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Using SMTP Settings in Squash]]></title>
+    <link href="http://allanweb.ca/blog/2014/02/14/using-smtp-settings-in-squash/"/>
+    <updated>2014-02-14T11:21:00-06:00</updated>
+    <id>http://allanweb.ca/blog/2014/02/14/using-smtp-settings-in-squash</id>
+    <content type="html"><![CDATA[<p>Recently, we started using <a href="https://github.com/SquareSquash/web">Squash</a>
+to monitor exceptions from our company&rsquo;s internal applications.</p>
+
+<p>We soon discovered, however, that we were not receiving emails from
+Squash to notify us of errors. It turns out that by default Squash&rsquo;s
+email setting use a localhost email configuration. For security reasons
+our servers do not have these services enabled on servers that do not
+require it. Therefore, we had to update Squash to send via our internal
+Exchange system. This is how we did it.</p>
+
+<h3>Add additional Gem requirements</h3>
+
+<p>We needed to use NTLM authentication so we added <code>ruby-ntlm</code> to the
+Gemfile and tell it to only require the SMTP settings.</p>
+
+<p><code>
+gem 'ruby-ntlm', require: 'ntlm/smtp'
+</code></p>
+
+<h3>ActionMailer Settings</h3>
+
+<p>Squash uses Configoro to manage configurations which is not complicated to
+use but we needed a quick fix to get things operating as we needed. As
+such we added a new initializer with our settings:</p>
+
+<p>```ruby</p>
+
+<h1>config/initializers/mail.rb</h1>
+
+<p>ActionMailer::Base.smtp_settings = {
+  :address  => &ldquo;mail.host&rdquo;,
+  :port  => 25,
+  :domain  => &lsquo;example.com&rsquo;,
+  :user_name => &lsquo;USER&rsquo;,
+  :password => &lsquo;PASS&rsquo;,
+  :authentication => :ntlm,
+  :enable_starttls_auto => true
+}
+```</p>
+
+<p>A quick app restart and email was back in business.</p>
+
+<p>We have forked Squash and are working on a &lsquo;proper&rsquo; solution for this
+that we will submit back to the project as a Pull Request. I will try to
+update this post when that patch is available and/or merged in.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Prefix Git Commit Message using Hooks - Peer's Corner</title>
+  <title>Using SMTP Settings in Squash - Peer's Corner</title>
   <meta name="author" content="Peer Allan">
 
    
@@ -19,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://allanweb.ca/blog/2012/11/02/prefix-git-commit-message-using-hooks">
+  <link rel="canonical" href="http://allanweb.ca/blog/2014/02/14/using-smtp-settings-in-squash">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Quicksand:300,400' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
@@ -94,7 +94,7 @@
 
   <header>
   <div class="jumbotron">
-    Prefix Git Commit Message Using Hooks
+    Using SMTP Settings in Squash
 	<h5>
 
 
@@ -107,16 +107,66 @@
   
 
 
-<i class="icon-calendar-empty"></i> <time datetime="2012-11-02T10:01:00-05:00" pubdate data-updated="true">Nov 2<span>nd</span>, 2012</time></h5>
+<i class="icon-calendar-empty"></i> <time datetime="2014-02-14T11:21:00-06:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></h5>
   </div>
 </header>
   <div class="row-fluid">
     <div class="span12">
-      <p>My team uses <a href="http://chiliproject.org/">Chiliproject</a> to manage our user stories. We have a team agreement to ensure that each commit message into our git repository is prefixed with the issue ID that the commit is related to. In addition to this we have a branch naming convention that also identifies the issue that branch is supposed to address.  For example, a branch name could be, &ldquo;rm-3454-customer-defect&rdquo; and (hopefully) all commit messages will be prefixed with &ldquo;RM #3454&rdquo;. Chiliproject has some nice little features with linking and styling when the &ldquo;#4233&rdquo; pattern is found. However, it can be fickle. If you forget to put in a space, for example, &ldquo;RM#3432&rdquo; none of it will work.</p>
+      <p>Recently, we started using <a href="https://github.com/SquareSquash/web">Squash</a>
+to monitor exceptions from our company&rsquo;s internal applications.</p>
 
-<p>Making sure this formatting is correct can be a real pain in the a**.  Therefore, I took it upon myself to simplify things. The script below uses our branch naming convention to automatically prefix any commit message using the git &ldquo;commit-msg&rdquo; hook. You can see the code <a href="https://gist.github.com/pallan/4001241">is this gist</a>.</p>
+<p>We soon discovered, however, that we were not receiving emails from
+Squash to notify us of errors. It turns out that by default Squash&rsquo;s
+email setting use a localhost email configuration. For security reasons
+our servers do not have these services enabled on servers that do not
+require it. Therefore, we had to update Squash to send via our internal
+Exchange system. This is how we did it.</p>
 
-<p>Put this code in the &ldquo;.git/hooks/commit-msg&rdquo; file at the root of your repository, make it executable and you are ready to rumble (of course, this will only work if using ruby).</p>
+<h3>Add additional Gem requirements</h3>
+
+<p>We needed to use NTLM authentication so we added <code>ruby-ntlm</code> to the
+Gemfile and tell it to only require the SMTP settings.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem 'ruby-ntlm', require: 'ntlm/smtp'</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ActionMailer Settings</h3>
+
+<p>Squash uses Configoro to manage configurations which is not complicated to
+use but we needed a quick fix to get things operating as we needed. As
+such we added a new initializer with our settings:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># config/initializers/mail.rb</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">ActionMailer</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">smtp_settings</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="ss">:address</span>  <span class="o">=&gt;</span> <span class="s2">&quot;mail.host&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:port</span>  <span class="o">=&gt;</span> <span class="mi">25</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:domain</span>  <span class="o">=&gt;</span> <span class="s1">&#39;example.com&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:user_name</span> <span class="o">=&gt;</span> <span class="s1">&#39;USER&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="s1">&#39;PASS&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:authentication</span> <span class="o">=&gt;</span> <span class="ss">:ntlm</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:enable_starttls_auto</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A quick app restart and email was back in business.</p>
+
+<p>We have forked Squash and are working on a &lsquo;proper&rsquo; solution for this
+that we will submit back to the project as a Pull Request. I will try to
+update this post when that patch is available and/or merged in.</p>
 
     </div>
   </div>
@@ -135,9 +185,11 @@
 
 
 
-  <a href="/blog/categories/git/"><span class="badge">git</span></a>
+  <a href="/blog/categories/ActionMailer/"><span class="badge">ActionMailer</span></a>
 
   <a href="/blog/categories/ruby/"><span class="badge">ruby</span></a>
+
+  <a href="/blog/categories/squash/"><span class="badge">squash</span></a>
 
 
 
@@ -169,10 +221,8 @@
       <div class="span12">
         <p class="meta">
           
-            <a class="basic-alignment left" href="/blog/2010/11/19/activerecord-3-based-rubygem/" title="Previous Post: ActiveRecord 3 based Rubygem">&laquo; ActiveRecord 3 based Rubygem</a>
+            <a class="basic-alignment left" href="/blog/2013/09/22/chiliproject-to-redmine-converter/" title="Previous Post: Chiliproject to Redmine Converter">&laquo; Chiliproject to Redmine Converter</a>
           
-          
-            <a class="basic-alignment right" href="/blog/2012/11/19/brew-git-ps-1-not-found/" title="Next Post: Brew, git 1.8.0 & "-bash: __git_ps1: command not found"">Brew, git 1.8.0 & "-bash: __git_ps1: command not found" &raquo;</a>
           
         </p>
       </div>

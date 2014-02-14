@@ -4,7 +4,7 @@
   <title><![CDATA[Peer's Corner]]></title>
   <link href="http://allanweb.ca/atom.xml" rel="self"/>
   <link href="http://allanweb.ca/"/>
-  <updated>2013-09-24T07:14:39-05:00</updated>
+  <updated>2014-02-14T11:35:20-06:00</updated>
   <id>http://allanweb.ca/</id>
   <author>
     <name><![CDATA[Peer Allan]]></name>
@@ -12,6 +12,69 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Using SMTP Settings in Squash]]></title>
+    <link href="http://allanweb.ca/blog/2014/02/14/using-smtp-settings-in-squash/"/>
+    <updated>2014-02-14T11:21:00-06:00</updated>
+    <id>http://allanweb.ca/blog/2014/02/14/using-smtp-settings-in-squash</id>
+    <content type="html"><![CDATA[<p>Recently, we started using <a href="https://github.com/SquareSquash/web">Squash</a>
+to monitor exceptions from our company&rsquo;s internal applications.</p>
+
+<p>We soon discovered, however, that we were not receiving emails from
+Squash to notify us of errors. It turns out that by default Squash&rsquo;s
+email setting use a localhost email configuration. For security reasons
+our servers do not have these services enabled on servers that do not
+require it. Therefore, we had to update Squash to send via our internal
+Exchange system. This is how we did it.</p>
+
+<h3>Add additional Gem requirements</h3>
+
+<p>We needed to use NTLM authentication so we added <code>ruby-ntlm</code> to the
+Gemfile and tell it to only require the SMTP settings.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem 'ruby-ntlm', require: 'ntlm/smtp'</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ActionMailer Settings</h3>
+
+<p>Squash uses Configoro to manage configurations which is not complicated to
+use but we needed a quick fix to get things operating as we needed. As
+such we added a new initializer with our settings:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># config/initializers/mail.rb</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">ActionMailer</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">smtp_settings</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="ss">:address</span>  <span class="o">=&gt;</span> <span class="s2">&quot;mail.host&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:port</span>  <span class="o">=&gt;</span> <span class="mi">25</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:domain</span>  <span class="o">=&gt;</span> <span class="s1">&#39;example.com&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:user_name</span> <span class="o">=&gt;</span> <span class="s1">&#39;USER&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="s1">&#39;PASS&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:authentication</span> <span class="o">=&gt;</span> <span class="ss">:ntlm</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:enable_starttls_auto</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A quick app restart and email was back in business.</p>
+
+<p>We have forked Squash and are working on a &lsquo;proper&rsquo; solution for this
+that we will submit back to the project as a Pull Request. I will try to
+update this post when that patch is available and/or merged in.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Chiliproject to Redmine Converter]]></title>

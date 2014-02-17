@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Using SMTP Settings in Squash - Peer's Corner</title>
+  <title>Experimentation as a Win/Win - Peer's Corner</title>
   <meta name="author" content="Peer Allan">
 
    
@@ -19,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://allanweb.ca/blog/2014/02/14/using-smtp-settings-in-squash">
+  <link rel="canonical" href="http://allanweb.ca/blog/2013/11/12/experimentation-as-a-win-win">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Quicksand:300,400' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
@@ -94,7 +94,7 @@
 
   <header>
   <div class="jumbotron">
-    Using SMTP Settings in Squash
+    Experimentation as a Win/Win
 	<h5>
 
 
@@ -107,66 +107,55 @@
   
 
 
-<i class="icon-calendar-empty"></i> <time datetime="2014-02-14T11:21:00-06:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></h5>
+<i class="icon-calendar-empty"></i> <time datetime="2013-11-12T18:01:00-06:00" pubdate data-updated="true">Nov 12<span>th</span>, 2013</time></h5>
   </div>
 </header>
   <div class="row-fluid">
     <div class="span12">
-      <p>Recently, we started using <a href="https://github.com/SquareSquash/web">Squash</a>
-to monitor exceptions from our company&rsquo;s internal applications.</p>
+      <p>In the tech circles I follow online I have seen a lot of pixels
+dedicated to the release of <a href="http://37signals.com">37signals</a> new book
+<a href="https://itunes.apple.com/ca/book/remote/id625981856?mt=11&uo=4&at=1l3v2NY" target="itunes_store">Remote &ndash; Jason Fried &amp; David Heinemeier Hansson</a>. I have distinct interest in this
+as I have worked with a remote team, but have never been a remote worker
+myself. I have also spent most of the past few years leading a
+development team and wanted to see what observations this book may have
+from that perspective.</p>
 
-<p>We soon discovered, however, that we were not receiving emails from
-Squash to notify us of errors. It turns out that by default Squash&rsquo;s
-email setting use a localhost email configuration. For security reasons
-our servers do not have these services enabled on servers that do not
-require it. Therefore, we had to update Squash to send via our internal
-Exchange system. This is how we did it.</p>
+<p>Then I noticed this tweet from Joel Spolsky of Fog Creek Software,</p>
 
-<h3>Add additional Gem requirements</h3>
-
-<p>We needed to use NTLM authentication so we added <code>ruby-ntlm</code> to the
-Gemfile and tell it to only require the SMTP settings.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>gem 'ruby-ntlm', require: 'ntlm/smtp'</span></code></pre></td></tr></table></div></figure>
+<blockquote class="twitter-tweet"><p>Interested in companies with distributed dev teams (like Stack Exchange)? Read <a href="https://twitter.com/berkun">@berkun</a>&#39;s new book about WordPress <a href="http://t.co/6yQRnN0wht">http://t.co/6yQRnN0wht</a></p>&mdash; Joel Spolsky (@spolsky) <a href="https://twitter.com/spolsky/statuses/396786526182338561">November 2, 2013</a></blockquote>
 
 
-<h3>ActionMailer Settings</h3>
-
-<p>Squash uses Configoro to manage configurations which is not complicated to
-use but we needed a quick fix to get things operating as we needed. As
-such we added a new initializer with our settings:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># config/initializers/mail.rb</span>
-</span><span class='line'>
-</span><span class='line'><span class="ss">ActionMailer</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">smtp_settings</span> <span class="o">=</span> <span class="p">{</span>
-</span><span class='line'>  <span class="ss">:address</span>  <span class="o">=&gt;</span> <span class="s2">&quot;mail.host&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="ss">:port</span>  <span class="o">=&gt;</span> <span class="mi">25</span><span class="p">,</span>
-</span><span class='line'>  <span class="ss">:domain</span>  <span class="o">=&gt;</span> <span class="s1">&#39;example.com&#39;</span><span class="p">,</span>
-</span><span class='line'>  <span class="ss">:user_name</span> <span class="o">=&gt;</span> <span class="s1">&#39;USER&#39;</span><span class="p">,</span>
-</span><span class='line'>  <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="s1">&#39;PASS&#39;</span><span class="p">,</span>
-</span><span class='line'>  <span class="ss">:authentication</span> <span class="o">=&gt;</span> <span class="ss">:ntlm</span><span class="p">,</span>
-</span><span class='line'>  <span class="ss">:enable_starttls_auto</span> <span class="o">=&gt;</span> <span class="kp">true</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 
-<p>A quick app restart and email was back in business.</p>
+<p>I was immediately interested. Mr. Berkun was not only talking about
+his personal experiences on a distributed team, but also leading said
+team. I hoped it would provide the perspective I was looking for and I
+have not been disappointed.</p>
 
-<p>We have forked Squash and are working on a &lsquo;proper&rsquo; solution for this
-that we will submit back to the project as a Pull Request. I will try to
-update this post when that patch is available and/or merged in.</p>
+<p>After completing the book, one paragraph has really stuck with me.</p>
+
+<blockquote><p>[..] Every benefit granted can be used to perform better work, or it can be abused. The benefit itself rarely has much to do with it. If someone who works for you wants to work remotely or use a new e-mail tool or brainstorming method, little is lost in letting him or her try it out. If his or her performance stays the same or improves, you win. If it goes poorly, you still win, as you&#8217;ve demonstrated your willingness to experiment, encouraging everyone who works for you to continue looking for ways to improve their performance. They become allies in making you look good, because you&#8217;re simply willing to try. If someone suggests thirty-minute instead of sixty-minute meetings, what is there to lose? If the experiment fails, you end it and try another.</p><footer><strong>Excerpt From: The Year Without Pants - Scott Berkun</strong> <cite><a href='https://itunes.apple.com/ca/book/the-year-without-pants/id676183943?mt=11&uo=4&at=1l3v2NY'>itunes.apple.com/ca/book/&hellip;</a></cite></footer></blockquote>
+
+
+<p>Mr. Berkun&rsquo;s description of why experimentation by your employees/team
+is a win/win scenario really struck a chord. I like to think that I am a
+leader that encourages my team to experiment, but I can see now that I have
+stifled experimentation in the past due to potential to &lsquo;lose&rsquo;.
+I didn&rsquo;t have a win/win attitude.</p>
+
+<p>I intend to keep this attitude at front in my mind when talking about
+experimentation with my team in the future. I want to ensure that I keep
+the benefits of these experiments, both in success and failure, in a more
+positive perspective. Using this positive perspective I hope perform my own
+experiments to accomplish my goal of becoming a stronger leader for my
+team.</p>
+
+<p>If you&rsquo;re curious, I would recommend this book to anyone is looking to become stronger
+leader or looking to get a better understanding of distributed teams
+and, what I agree, is the future of work.</p>
+
+<p><a href="https://itunes.apple.com/ca/book/the-year-without-pants/id676183943?mt=11&uo=4&at=1l3v2NY" target="itunes_store"style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_ibooks-lrg.png) no-repeat;width:146px;height:40px;@media only screen{background-image:url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_ibooks-lrg.svg);}"></a></p>
 
     </div>
   </div>
@@ -185,11 +174,7 @@ update this post when that patch is available and/or merged in.</p>
 
 
 
-  <a href="/blog/categories/ActionMailer/"><span class="badge">ActionMailer</span></a>
-
-  <a href="/blog/categories/ruby/"><span class="badge">ruby</span></a>
-
-  <a href="/blog/categories/squash/"><span class="badge">squash</span></a>
+  <a href="/blog/categories/leadership/"><span class="badge">leadership</span></a>
 
 
 
@@ -221,8 +206,10 @@ update this post when that patch is available and/or merged in.</p>
       <div class="span12">
         <p class="meta">
           
-            <a class="basic-alignment left" href="/blog/2013/11/12/experimentation-as-a-win-win/" title="Previous Post: Experimentation as a Win/Win">&laquo; Experimentation as a Win/Win</a>
+            <a class="basic-alignment left" href="/blog/2013/11/10/dealing-with-rails-4-deprecations/" title="Previous Post: Dealing with Rails 4 Deprecations">&laquo; Dealing with Rails 4 Deprecations</a>
           
+          
+            <a class="basic-alignment right" href="/blog/2014/02/14/using-smtp-settings-in-squash/" title="Next Post: Using SMTP Settings in Squash">Using SMTP Settings in Squash &raquo;</a>
           
         </p>
       </div>

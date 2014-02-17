@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: leadership | Peer's Corner]]></title>
+  <link href="http://allanweb.ca/blog/categories/leadership/atom.xml" rel="self"/>
+  <link href="http://allanweb.ca/"/>
+  <updated>2014-02-17T09:06:38-06:00</updated>
+  <id>http://allanweb.ca/</id>
+  <author>
+    <name><![CDATA[Peer Allan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Experimentation as a Win/Win]]></title>
+    <link href="http://allanweb.ca/blog/2013/11/12/experimentation-as-a-win-win/"/>
+    <updated>2013-11-12T18:01:00-06:00</updated>
+    <id>http://allanweb.ca/blog/2013/11/12/experimentation-as-a-win-win</id>
+    <content type="html"><![CDATA[<p>In the tech circles I follow online I have seen a lot of pixels
+dedicated to the release of <a href="http://37signals.com">37signals</a> new book
+<a href="https://itunes.apple.com/ca/book/remote/id625981856?mt=11&uo=4&at=1l3v2NY" target="itunes_store">Remote &ndash; Jason Fried &amp; David Heinemeier Hansson</a>. I have distinct interest in this
+as I have worked with a remote team, but have never been a remote worker
+myself. I have also spent most of the past few years leading a
+development team and wanted to see what observations this book may have
+from that perspective.</p>
+
+<p>Then I noticed this tweet from Joel Spolsky of Fog Creek Software,</p>
+
+<blockquote class="twitter-tweet"><p>Interested in companies with distributed dev teams (like Stack Exchange)? Read <a href="https://twitter.com/berkun">@berkun</a>&#39;s new book about WordPress <a href="http://t.co/6yQRnN0wht">http://t.co/6yQRnN0wht</a></p>&mdash; Joel Spolsky (@spolsky) <a href="https://twitter.com/spolsky/statuses/396786526182338561">November 2, 2013</a></blockquote>
+
+
+<script async src="http://allanweb.ca//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>I was immediately interested. Mr. Berkun was not only talking about
+his personal experiences on a distributed team, but also leading said
+team. I hoped it would provide the perspective I was looking for and I
+have not been disappointed.</p>
+
+<p>After completing the book, one paragraph has really stuck with me.</p>
+
+<p><blockquote><p>[..] Every benefit granted can be used to perform better work, or it can be abused. The benefit itself rarely has much to do with it. If someone who works for you wants to work remotely or use a new e-mail tool or brainstorming method, little is lost in letting him or her try it out. If his or her performance stays the same or improves, you win. If it goes poorly, you still win, as you&rsquo;ve demonstrated your willingness to experiment, encouraging everyone who works for you to continue looking for ways to improve their performance. They become allies in making you look good, because you&rsquo;re simply willing to try. If someone suggests thirty-minute instead of sixty-minute meetings, what is there to lose? If the experiment fails, you end it and try another.</p><footer><strong>Excerpt From: The Year Without Pants &ndash; Scott Berkun <a href="https://itunes.apple.com/ca/book/the-year-without-pants/id676183943?mt=11&amp;uo=4&amp;at=1l3v2NY">https://itunes.apple.com/ca/book/the-year-without-pants/id676183943?mt=11&amp;uo=4&amp;at=1l3v2NY</a></strong></footer></blockquote></p>
+
+<p>Mr. Berkun&rsquo;s description of why experimentation by your employees/team
+is a win/win scenario really struck a chord. I like to think that I am a
+leader that encourages my team to experiment, but I can see now that I have
+stifled experimentation in the past due to potential to &lsquo;lose&rsquo;.
+I didn&rsquo;t have a win/win attitude.</p>
+
+<p>I intend to keep this attitude at front in my mind when talking about
+experimentation with my team in the future. I want to ensure that I keep
+the benefits of these experiments, both in success and failure, in a more
+positive perspective. Using this positive perspective I hope perform my own
+experiments to accomplish my goal of becoming a stronger leader for my
+team.</p>
+
+<p>If you&rsquo;re curious, I would recommend this book to anyone is looking to become stronger
+leader or looking to get a better understanding of distributed teams
+and, what I agree, is the future of work.</p>
+
+<p><a href="https://itunes.apple.com/ca/book/the-year-without-pants/id676183943?mt=11&uo=4&at=1l3v2NY" target="itunes_store"style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_ibooks-lrg.png) no-repeat;width:146px;height:40px;@media only screen{background-image:url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_ibooks-lrg.svg);}"></a></p>
+]]></content>
+  </entry>
+  
+</feed>
